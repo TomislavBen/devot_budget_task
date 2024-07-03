@@ -86,5 +86,4 @@ public class Account {
     Long costDifference = newCost - originalCost;
     reduceBalance(costDifference);
   }
-
 }

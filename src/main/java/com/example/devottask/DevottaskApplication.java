@@ -9,5 +9,4 @@ public class DevottaskApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DevottaskApplication.class, args);
 	}
-
 }

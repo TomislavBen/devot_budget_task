@@ -15,12 +15,12 @@ import com.example.devottask.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collections;
+
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-
-@RequestMapping(path = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/v1")
 @RestController
 @RequiredArgsConstructor
 public class AccountController {
@@ -30,27 +30,25 @@ public class AccountController {
   private final PredefinedCategories predefinedCategories;
 
   @PostMapping("/register")
-    public ResponseEntity<?> registerAccount(@Valid @RequestBody AccountRegistrationRequest registrationRequest) throws Exception {
-       
-      Account acc =
-        new Account()
-            .setName(registrationRequest.getName())
-            .setEmail(accountRepo.checkIfMailInUse(registrationRequest.getEmail()))
-            .setPassword(registrationRequest.getPassword());
+  public ResponseEntity<?> registerAccount(@Valid @RequestBody AccountRegistrationRequest registrationRequest)
+      throws Exception {
+    Account acc = new Account()
+        .setName(registrationRequest.getName())
+        .setEmail(accountRepo.checkIfMailInUse(registrationRequest.getEmail()))
+        .setPassword(registrationRequest.getPassword());
 
-            accountRepo.save(acc);
+    accountRepo.save(acc);
 
-            predefinedCategories.createPredefinedCategoriesForAccount(acc);
+    predefinedCategories.createPredefinedCategoriesForAccount(acc);
 
-    return ResponseEntity.status(HttpStatus.CREATED).body("Account registered");
-}
+    return ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonMap("message", "Account registered"));
+  }
 
-@PatchMapping("/accounts/update")
+  @PatchMapping("/accounts/update")
   public ResponseEntity<?> updateAccountBalance(@RequestBody Long deposit)
       throws Exception {
-
     Account account = accountService.checkAccount();
 
-   return ResponseEntity.ok(accountRepo.save(account.setBalance(account.getBalance() + deposit)));
+    return ResponseEntity.ok(accountRepo.save(account.setBalance(account.getBalance() + deposit)));
   }
 }

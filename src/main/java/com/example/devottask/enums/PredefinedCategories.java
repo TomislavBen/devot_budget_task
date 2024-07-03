@@ -17,20 +17,20 @@ public class PredefinedCategories {
   private CategoryRepo categoryRepo;
 
   public void createPredefinedCategoriesForAccount(Account account) {
-        // List of predefined category names
-        List<String> categoryNames = Arrays.asList("Food", "Car", "House", "Clothes");
-        List<String> descriptions = Arrays.asList("groceries, ordered food, dinner", "Registration, insurance, fuel", "Rent, utilities, repairs", "Shoes, shirts, pants");
+    List<String> categoryNames = Arrays.asList("Food", "Car", "House", "Clothes");
+    List<String> descriptions = Arrays.asList("groceries, ordered food, dinner", "Registration, insurance, fuel",
+        "Rent, utilities, repairs", "Shoes, shirts, pants");
 
-        for (int i = 0; i < categoryNames.size(); i++) {
-          String name = categoryNames.get(i);
-          String description = descriptions.get(i); // Get the corresponding description
+    for (int i = 0; i < categoryNames.size(); i++) {
+      String name = categoryNames.get(i);
+      String description = descriptions.get(i);
 
-          Category category = new Category()
-                  .setName(name)
-                  .setDescription(description) // Set the specific description
-                  .setAccount(account);
+      Category category = new Category()
+          .setName(name)
+          .setDescription(description)
+          .setAccount(account);
 
-          categoryRepo.save(category);
-      }
-}
+      categoryRepo.save(category);
+    }
+  }
 }

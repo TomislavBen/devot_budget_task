@@ -1,5 +1,7 @@
 package com.example.devottask.api.v1.request;
 
+import java.time.LocalDate;
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -17,4 +19,5 @@ public class CreateExpenseRequest {
 
   private String description;
 
+  private LocalDate transactionDate;
 }

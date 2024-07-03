@@ -15,20 +15,26 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.config.Customizer;
 
+// import org.springframework.beans.factory.annotation.Autowired;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-  private static final String[] SECURED_URLs = {"/api/v1/user/**"};
+  // @Autowired
+  // private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+  private static final String[] USER_SECURED_URLs = {
+      "/api/v1/categories",
+      "/api/v1/expenses",
+      "/api/v1/accounts",
+  };
 
   private static final String[] UN_SECURED_URLs = {
-    "/api/v1/**",
-    "/api/v1/register",
-    "/docs/swagger-ui/index.html",
-    "/openapi.yaml"
+      "/api/v1/register",
+      "/openapi.yaml"
   };
- 
+
   @Bean
   public UserDetailsService userDetailsService() {
     return new AccountDetailsService();
@@ -51,19 +57,22 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.cors(cors -> {})
+    http.cors(cors -> {
+    })
         .csrf(CsrfConfigurer::disable)
         .authorizeHttpRequests(
-            authorize ->
-                authorize
-                .requestMatchers(UN_SECURED_URLs).permitAll()
-                .requestMatchers(SECURED_URLs).hasRole("USER")
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .anyRequest().authenticated())
+            authorize -> authorize
+                .requestMatchers(UN_SECURED_URLs)
+                .permitAll()
+                .requestMatchers(USER_SECURED_URLs)
+                .hasAuthority("USER")
+                .requestMatchers(HttpMethod.OPTIONS, "/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated())
         .httpBasic(Customizer.withDefaults())
         .logout(
-            logout ->
-                logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll());
+            logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll());
 
     return http.build();
   }

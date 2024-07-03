@@ -1,0 +1,484 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Devot Budget API
+servers:
+  - url: http://localhost:8080
+    description: Local Devot Budget API server
+  
+tags:
+  - name: Account
+    description: Account management
+  - name: Category 
+    description: Category operations
+  - name: Expenses
+    description: Expenses operations
+paths:
+  /api/v1/register:
+    post:
+      summary: Register new account
+      operationId: registration
+      tags:
+        - Account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+        required: true
+      responses:
+        '201':
+          description: Account registered
+        '400':
+          description: Bad request
+  /api/v1/accounts/update:
+    patch:
+      summary: Update account balance
+      operationId: update
+      tags:
+        - Account
+      requestBody:
+        description: Deposit amount to be added or subtracted to the account balance.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: integer
+              format: int64
+              description: Deposit amount
+      responses:
+        '200':
+          description: Account balance updated
+        '400':
+          description: Bad request  
+  /api/v1/categories:
+    post:
+      summary: Create a new category
+      description: Creates a new category with the given name and description for the current account.
+      operationId: registration
+      tags:
+        - Category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategoryRequest'
+      responses:
+        '200':
+          description: Category created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+    get:
+      summary: Get all categories for account
+      operationId: getAllCategories
+      tags:
+        - Category
+      responses:
+        '200':
+          description: Success
+  /api/v1/categories/{id}:
+    get:
+      summary: Get a category by ID
+      operationId: getCategoryById
+      tags:
+        - Category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: No category found with given ID and account
+    patch:
+      summary: Update a category
+      operationId: updateCategory
+      tags:
+        - Category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCategoryRequest'
+      responses:
+        '200':
+          description: Category updated successfully
+        '400':
+          description: No category found with given ID and account
+    delete:
+      summary: Delete a category
+      operationId: deleteCategory
+      tags:
+        - Category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Category deleted successfully
+        '400':
+          description: Bad request
+  /api/v1/expenses:
+    post:
+      summary: "Create a new expense"
+      description: "Creates a new expense with the given details."
+      operationId: "createExpense"
+      tags:
+        - Expenses
+      requestBody:
+        description: "Expense creation request body"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateExpenseRequest'
+      responses:
+        '200':
+          description: "Expense successfully created"
+        '400':
+          description: "Bad request"
+    get:
+      summary: "Get All Expenses"
+      description: "Retrieves all expenses for the current account."
+      operationId: "getAllExpenses"
+      tags:
+        - Expenses
+      responses:
+        '200':
+          description: "Expenses retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: '#/components/schemas/Expense'
+  /api/v1/expenses/{id}:
+    get:
+      summary: "Get Expense by ID"
+      description: "Retrieves an expense by its ID for the current account."
+      operationId: "getExpenseById"
+      tags:
+        - Expenses
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+          description: "The ID of the expense to retrieve"
+      responses:
+        '200':
+          description: "Expense retrieved successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '404':
+          description: "Expense not found"
+    patch:
+      summary: "Update an Expense"
+      description: "Updates the details of an existing expense."
+      operationId: "updateExpense"
+      tags:
+        - Expenses
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+          description: "The ID of the expense to update"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateExpenseRequest'
+      responses:
+        '200':
+          description: "Expense updated successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '400':
+          description: "Invalid request"
+        '404':
+          description: "Expense not found"
+    delete:
+      summary: "Delete an Expense"
+      description: "Deletes an expense by its ID."
+      operationId: "deleteExpense"
+      tags:
+        - Expenses
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+          description: "The ID of the expense to delete"
+      responses:
+        '200':
+          description: "Expense deleted successfully"
+        '404':
+          description: "Expense not found"
+  /api/v1/expenses/by-category:
+    get:
+      summary: "Get Expenses by Category"
+      description: "Retrieves all expenses for a given category"
+      operationId: "getExpensesByCategory"
+      tags:
+        - Expenses
+      parameters:
+        - name: "categoryName"
+          in: "query"
+          required: true
+          schema:
+            type: string
+          description: "The name of the category to retrieve expenses for"
+      responses:
+        '200':
+          description: "Expenses retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+        '400':
+          description: "Invalid category name"
+  /api/v1/expenses/by-date:
+    post:
+      summary: "Get Expenses by Date Range"
+      description: "Retrieves all expenses within a specified date range."
+      operationId: "getExpensesByDate"
+      tags:
+        - Expenses
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseDateRequest'
+      responses:
+        '200':
+          description: "Expenses retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+        '400':
+          description: "Bad request"
+  /api/v1/expenses/by-cost:
+    post:
+      summary: "Get Expenses by Cost Range"
+      description: "Retrieves all expenses within a specified cost range."
+      operationId: "getExpensesByCost"
+      tags:
+        - Expenses
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseCostRequest'
+      responses:
+        '200':
+          description: "Expenses retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+        '400':
+          description: "Bad request"
+  /api/v1/expenses/sum-by-date:
+    post:
+      summary: "Get Sum of Expenses by Date Range"
+      description: "Retrieves the sum of all expenses within a specified date range."
+      operationId: "getExpensesSumByDate"
+      tags:
+        - Expenses
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseDateRequest'
+      responses:
+        '200':
+          description: "Sum of expenses retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '400':
+          description: "Bad request"
+components:
+  schemas:
+    UserRegistrationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "John Doe"
+        password:
+          type: string
+          example: "password"
+        email:
+          type: string
+          format: email
+          example: "example@email.com"
+      required:
+        - name
+        - password
+        - email
+    CreateCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the category
+          example: "new category"
+        description:
+          type: string
+          description: Description of the category
+          example: "new category description"
+      required:
+        - name
+    UpdateCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+          description: Name of the category
+          example: "update category"
+        description:
+          type: string
+          nullable: true
+          description: Description of the category
+          example: "update category description"
+    CreateExpenseRequest:
+      type: object
+      required:
+        - category
+        - cost
+      properties:
+        category:
+          type: string
+          description: "The category of the expense"
+          example: "House"
+        cost:
+          type: integer
+          format: int64
+          minimum: 0
+          description: "The cost of the expense"
+          example: 100
+        description:
+          type: string
+          description: "A description of the expense, optional"
+          example: "new expense"
+        transactionDate:
+          type: string
+          format: date
+          description: "The date of the transaction, optional"
+          example: "2021-01-01"
+    Expense:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "The ID of the expense"
+        account:
+          type: object
+          description: "The account the expense belongs to"
+        category:
+          type: object
+          description: "The category of the expense"
+        cost:
+          type: integer
+          format: int64
+          description: "The cost of the expense"
+        description:
+          type: string
+          description: "A description of the expense"
+        transactionDate:
+          type: string
+          format: date
+          description: "The date of the transaction"
+    UpdateExpenseRequest:
+      type: object
+      properties:
+        category:
+          type: object
+          description: "The new category of the expense"
+          example: "new existing category"
+        cost:
+          type: integer
+          format: int64
+          description: "The new cost of the expense"
+          example: 50
+        description:
+          type: string
+          description: "The new description of the expense"
+          example: "new description"
+        transactionDate:
+          type: string
+          format: date
+          description: "The new transaction date of the expense"
+          example: "2021-01-01"
+    ExpenseDateRequest:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date
+          description: "The start date of the date range"
+        endDate:
+          type: string
+          format: date
+          description: "The end date of the date range"
+    ExpenseCostRequest:
+      type: object
+      properties:
+        min:
+          type: integer
+          format: int64
+          description: "The minimum cost of the expense"
+        max:
+          type: integer
+          format: int64
+          description: "The maximum cost of the expense"

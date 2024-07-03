@@ -23,11 +23,13 @@ import jakarta.transaction.Transactional;
 @Repository
 public class AccountRepoImpl implements AccountRepo {
 
-  @PersistenceContext private EntityManager entityManager;
+  @PersistenceContext
+  private EntityManager entityManager;
 
   private CriteriaBuilder cb;
 
-  public AccountRepoImpl() {}
+  public AccountRepoImpl() {
+  }
 
   @PostConstruct
   public void init() {
@@ -57,6 +59,7 @@ public class AccountRepoImpl implements AccountRepo {
   @Transactional
   @Override
   public boolean doesAccountExistByEmail(String email) {
+    
     return findByEmail(email).isPresent();
   }
 

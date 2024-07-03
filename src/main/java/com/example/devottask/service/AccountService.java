@@ -13,8 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AccountService {
 
-    private final AccountRepo accountRepo;
-
+  private final AccountRepo accountRepo;
 
   public Account checkAccount() {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -29,5 +28,4 @@ public class AccountService {
 
     throw new IllegalArgumentException("Not logged in");
   }
-
 }

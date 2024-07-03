@@ -5,11 +5,9 @@ import lombok.Data;
 
 @Data
 public class CreateCategoryRequest {
-  
+
   @NotEmpty
   private String name;
-  
+
   private String description;
-
-
 }

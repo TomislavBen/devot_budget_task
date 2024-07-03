@@ -20,5 +20,4 @@ public interface AccountRepo {
   List<Account> findAll();
 
   Account findById(Long id);
-
 }
