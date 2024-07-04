@@ -83,6 +83,10 @@ paths:
       responses:
         '200':
           description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
   /api/v1/categories/{id}:
     get:
       summary: Get a category by ID
@@ -99,6 +103,10 @@ paths:
       responses:
         '200':
           description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
         '400':
           description: No category found with given ID and account
     patch:
@@ -122,6 +130,10 @@ paths:
       responses:
         '200':
           description: Category updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
         '400':
           description: No category found with given ID and account
     delete:
@@ -158,6 +170,10 @@ paths:
       responses:
         '200':
           description: "Expense successfully created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
         '400':
           description: "Bad request"
     get:
@@ -415,6 +431,24 @@ components:
           format: date
           description: "The date of the transaction, optional"
           example: "2021-01-01"
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the Account.
+        name:
+          type: string
+          description: Name of the account holder.
+        email:
+          type: string
+          format: email
+          description: Email address of the account holder.
+        balance:
+          type: integer
+          format: int64
+          description: Balance amount in the account.
     Expense:
       type: object
       properties:
@@ -425,9 +459,11 @@ components:
         account:
           type: object
           description: "The account the expense belongs to"
+          $ref: '#/components/schemas/Account'
         category:
           type: object
           description: "The category of the expense"
+          $ref: '#/components/schemas/Category'
         cost:
           type: integer
           format: int64
@@ -439,6 +475,19 @@ components:
           type: string
           format: date
           description: "The date of the transaction"
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        description:
+          type: string
+        account:
+          type: object
+          $ref: '#/components/schemas/Account'
     UpdateExpenseRequest:
       type: object
       properties:
