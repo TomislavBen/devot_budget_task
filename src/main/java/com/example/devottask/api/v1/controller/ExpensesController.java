@@ -25,7 +25,7 @@ import com.example.devottask.repository.AccountRepo;
 import com.example.devottask.repository.CategoryRepo;
 import com.example.devottask.repository.ExpenseRepo;
 import com.example.devottask.service.AccountService;
-import com.example.devottask.service.CategoryService;
+import com.example.devottask.service.ExpensesService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class ExpensesController {
 
   private final AccountService accountService;
 
-  private final CategoryService categoryService;
+  private final ExpensesService expensesService;
 
   private final ExpenseRepo expenseRepo;
 
@@ -49,7 +49,7 @@ public class ExpensesController {
   public ResponseEntity<Expense> createExpense(@Valid @RequestBody CreateExpenseRequest createExpenseRequest)
       throws Exception {
     Account account = accountService.checkAccount();
-    Category category = categoryService.getCategoryByNameForAccount(createExpenseRequest.getCategory());
+    Category category = expensesService.getCategoryByNameForAccount(createExpenseRequest.getCategory());
 
     Expense expense = new Expense()
         .setCategory(category)
@@ -85,7 +85,7 @@ public class ExpensesController {
       @RequestBody UpdateExpenseRequest updateExpenseRequest) throws Exception {
     Account account = accountService.checkAccount();
     Expense expense = expenseRepo.findByIdAndAccount(id, account);
-    Optional<Category> category = categoryService
+    Optional<Category> category = expensesService
         .getCategoryByNameForAccountOptional(updateExpenseRequest.getCategory());
 
     category.ifPresent(expense::setCategory);
@@ -119,7 +119,7 @@ public class ExpensesController {
   @GetMapping("/by-category")
   public List<Expense> getExpensesByCategory(@RequestParam String categoryName) {
     Account account = accountService.checkAccount();
-    Category category = categoryRepo.findByName(categoryName);
+    Category category = categoryRepo.findByNameAndAccount(categoryName, account);
 
     return expenseRepo.findByCategoryAndAccount(category, account);
   }

@@ -55,6 +55,10 @@ public class CategoryRepoImpl implements CategoryRepo {
   @Transactional
   @Override
   public Category findByNameAndAccountOptional(Optional<String> nameOpt, Account account) {
+    if (!nameOpt.isPresent() || nameOpt.get().trim().isEmpty()) {
+      return null;
+    }
+
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<Category> cq = cb.createQuery(Category.class);
     Root<Category> root = cq.from(Category.class);

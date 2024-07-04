@@ -25,17 +25,17 @@ public class CategoryService {
     }
   }
 
-  public Category getCategoryByNameForAccount(String categoryName) {
-    Account currentAccount = accountService.checkAccount();
-    Category category = categoryRepo.findByNameAndAccount(categoryName, currentAccount);
-    if (category == null) {
-      throw new IllegalArgumentException("Category with that name does not exist");
-    }
-    return category;
-  }
+  // public Category getCategoryByNameForAccount(String categoryName) {
+  //   Account currentAccount = accountService.checkAccount();
+  //   Category category = categoryRepo.findByNameAndAccount(categoryName, currentAccount);
+  //   if (category == null) {
+  //     throw new IllegalArgumentException("Category with that name does not exist");
+  //   }
+  //   return category;
+  // }
 
-  public Optional<Category> getCategoryByNameForAccountOptional(Optional<String> categoryName) {
-    Account currentAccount = accountService.checkAccount();
-    return Optional.ofNullable(categoryRepo.findByNameAndAccountOptional(categoryName, currentAccount));
-  }
+  // public Optional<Category> getCategoryByNameForAccountOptional(Optional<String> categoryName) {
+  //   Account currentAccount = accountService.checkAccount();
+  //   return Optional.ofNullable(categoryRepo.findByNameAndAccountOptional(categoryName, currentAccount));
+  // }
 }

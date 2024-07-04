@@ -23,6 +23,7 @@ import com.example.devottask.entity.Category;
 import com.example.devottask.entity.Expense;
 import com.example.devottask.service.AccountService;
 import com.example.devottask.service.CategoryService;
+import com.example.devottask.service.ExpensesService;
 import com.example.devottask.repository.AccountRepo;
 import com.example.devottask.repository.CategoryRepo;
 import com.example.devottask.repository.ExpenseRepo;
@@ -40,6 +41,9 @@ public class ExpensesControllerTest {
 
   @Mock
   private CategoryService categoryService;
+
+  @Mock
+  private ExpensesService expensesService;
 
   @Mock
   private ExpenseRepo expenseRepo;
@@ -77,7 +81,7 @@ public class ExpensesControllerTest {
         .setAccount(mockAccount);
 
     when(accountService.checkAccount()).thenReturn(mockAccount);
-    when(categoryService.getCategoryByNameForAccount(request.getCategory())).thenReturn(mockCategory);
+    when(expensesService.getCategoryByNameForAccount(request.getCategory())).thenReturn(mockCategory);
     when(expenseRepo.save(any(Expense.class))).thenReturn(expectedExpense);
 
     ResponseEntity<Expense> response = expensesController.createExpense(request);
@@ -126,7 +130,7 @@ public class ExpensesControllerTest {
     Account mockAccount = new Account();
     when(accountService.checkAccount()).thenReturn(mockAccount);
     when(expenseRepo.findByIdAndAccount(id, mockAccount)).thenReturn(mockExpense);
-    when(categoryService.getCategoryByNameForAccountOptional(Optional.empty())).thenReturn(Optional.of(new Category()));
+    when(expensesService.getCategoryByNameForAccountOptional(Optional.empty())).thenReturn(Optional.of(new Category()));
 
     ResponseEntity<Expense> response = expensesController.updateExpense(id, updateExpenseRequest);
 
@@ -158,12 +162,12 @@ public class ExpensesControllerTest {
     mockExpenses = Arrays.asList(new Expense(), new Expense());
 
     when(accountService.checkAccount()).thenReturn(mockAccount);
-    when(categoryRepo.findByName("Food")).thenReturn(mockCategory);
+    when(categoryRepo.findByNameAndAccount("Food", mockAccount)).thenReturn(mockCategory);
     when(expenseRepo.findByCategoryAndAccount(mockCategory, mockAccount)).thenReturn(mockExpenses);
     List<Expense> expenses = expensesController.getExpensesByCategory("Food");
 
     verify(accountService, times(1)).checkAccount();
-    verify(categoryRepo, times(1)).findByName("Food");
+    verify(categoryRepo, times(1)).findByNameAndAccount("Food", mockAccount);
     verify(expenseRepo, times(1)).findByCategoryAndAccount(mockCategory, mockAccount);
 
     assertNotNull(expenses);
