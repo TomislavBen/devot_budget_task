@@ -37,6 +37,7 @@ public class GlobalExceptionHandler {
       case "Insufficient balance.":
       case "Category not found":
       case "Cannot delete category as it has associated expenses.":
+      case "Category with that name does not exist":
         status = HttpStatus.BAD_REQUEST;
         break;
       default:

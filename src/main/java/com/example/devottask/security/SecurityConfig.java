@@ -15,14 +15,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.config.Customizer;
 
-// import org.springframework.beans.factory.annotation.Autowired;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-  // @Autowired
-  // private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
   private static final String[] USER_SECURED_URLs = {
       "/api/v1/categories",
